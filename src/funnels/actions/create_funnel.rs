@@ -5,7 +5,7 @@ use crate::funnels::models::funnel::{
     NewFunnel,
     Funnel,
 };
-use crate::funnels::request::new_funnel::NewFunnelRequest;
+use crate::funnels::requests::new_funnel::NewFunnelRequest;
 
 pub fn create_funnel(conn: &mut PgConnection, funnel_request: NewFunnelRequest) -> Funnel {
     let new_post = NewFunnel {

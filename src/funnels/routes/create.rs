@@ -1,8 +1,7 @@
-use rocket::Route;
 use rocket::serde::json::Json;
 use crate::database::establish_connection;
 
-use crate::funnels::request::new_funnel::NewFunnelRequest;
+use crate::funnels::requests::new_funnel::NewFunnelRequest;
 use crate::funnels::response::funnel::FunnelResponse;
 use crate::funnels::actions::create_funnel::create_funnel;
 

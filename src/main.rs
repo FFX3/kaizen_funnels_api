@@ -22,7 +22,6 @@ impl MountsContainer for Rocket<Build> {
     }
 }
 
-
 #[launch]
 async fn launch() -> Rocket<Build> {
     database::establish_connection();
