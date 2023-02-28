@@ -7,7 +7,8 @@ pub struct Funnel {
     pub id: i32,
     pub label: String,
     pub created_at: SystemTime,
-    pub updated_at: Option<SystemTime>
+    pub updated_at: Option<SystemTime>,
+    pub deleted_at: Option<SystemTime>
 }
 
 #[derive(Insertable)]

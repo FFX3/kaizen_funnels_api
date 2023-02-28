@@ -6,6 +6,7 @@ diesel::table! {
         label -> Varchar,
         created_at -> Timestamp,
         updated_at -> Nullable<Timestamp>,
+        deleted_at -> Nullable<Timestamp>,
     }
 }
 
@@ -16,6 +17,7 @@ diesel::table! {
         funnel_id -> Int4,
         created_at -> Timestamp,
         updated_at -> Nullable<Timestamp>,
+        deleted_at -> Nullable<Timestamp>,
     }
 }
 
