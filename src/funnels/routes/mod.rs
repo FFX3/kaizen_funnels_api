@@ -1,9 +1,10 @@
 use rocket::Route;
 
-mod create;
+mod funnels;
 
 pub fn routes() -> Vec<Route> {
     routes![
-        create::create
+        funnels::create,
+        funnels::list
     ]
 }

@@ -7,11 +7,6 @@ mod database;
 
 #[macro_use] extern crate rocket;
 
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
-
 trait MountsContainer {
     fn mount_container(self, container: container::Container) -> Rocket<Build>;
 }
@@ -26,6 +21,5 @@ impl MountsContainer for Rocket<Build> {
 async fn launch() -> Rocket<Build> {
     database::establish_connection();
     rocket::build()
-        .mount("/bingo", routes![index])
         .mount_container(funnels::build())
 }

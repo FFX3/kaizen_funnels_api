@@ -1,4 +1,4 @@
-use diesel::PgConnection;
+use crate::database::establish_connection;
 use diesel::prelude::*;
 use crate::schema::funnels;
 use crate::funnels::models::funnel::{
@@ -7,7 +7,8 @@ use crate::funnels::models::funnel::{
 };
 use crate::funnels::requests::new_funnel::NewFunnelRequest;
 
-pub fn create_funnel(conn: &mut PgConnection, funnel_request: NewFunnelRequest) -> Funnel {
+pub fn create_funnel(funnel_request: NewFunnelRequest) -> Funnel {
+    let conn = &mut establish_connection();
     let new_post = NewFunnel {
         label: &funnel_request.label,
         created_at: std::time::SystemTime::now()
