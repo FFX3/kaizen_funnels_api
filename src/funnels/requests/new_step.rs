@@ -7,11 +7,13 @@ use rocket::serde::{
 #[serde(crate = "rocket::serde")]
 pub struct NewStepRequest {
     pub title: String,
-    pub variation_id: i32
+    pub variation_id: i32,
+    pub order: i32,
 }
 
 #[derive(Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct UpdateStepRequest {
     pub title: String,
+    pub order: i32,
 }

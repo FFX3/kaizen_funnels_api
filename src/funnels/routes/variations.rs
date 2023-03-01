@@ -4,6 +4,7 @@ use crate::funnels::requests::new_variation::{
     UpdateVariationRequest
 };
 use crate::funnels::responses::variation::VariationResponse;
+use crate::funnels::responses::step::*;
 use crate::funnels::actions::variation::{
     create_variation,
     update_variation,
@@ -13,8 +14,18 @@ use crate::funnels::actions::variation::{
     mark_variation_as_b, 
     mark_variation_as_winner
 };
+use crate::funnels::actions::step::get_all_active_steps_from_variation_id;
 use crate::funnels::responses::variation::*;
 
+#[get("/<id>/steps")]
+pub fn list_steps(id: i32) -> Json<Vec<StepResponse>> {
+    let step_list = get_all_active_steps_from_variation_id(id);
+    let response = step_list
+        .into_iter()
+        .map(|step| (StepResponse::from_step(step)))
+        .collect();
+    Json(response)
+}
 
 #[post("/", data = "<variation_request>")]
 pub fn create(variation_request: Json<NewVariationRequest>) -> Json<VariationResponse> {

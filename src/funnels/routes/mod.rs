@@ -23,7 +23,8 @@ pub fn get_variation_routes() -> Vec<Route> {
         variations::delete,
         variations::mark_a,
         variations::mark_b,
-        variations::mark_winner
+        variations::mark_winner,
+        variations::list_steps,
     ]
 }
 
@@ -33,5 +34,6 @@ pub fn get_step_routes() -> Vec<Route> {
         steps::update,
         steps::list,
         steps::delete,
+        steps::update_content,
     ]
 }

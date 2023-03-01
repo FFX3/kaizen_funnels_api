@@ -1,6 +1,16 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    contents (id) {
+        id -> Int4,
+        content -> Text,
+        created_at -> Timestamp,
+        updated_at -> Nullable<Timestamp>,
+        deleted_at -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
     funnels (id) {
         id -> Int4,
         label -> Varchar,
@@ -18,6 +28,8 @@ diesel::table! {
         created_at -> Timestamp,
         updated_at -> Nullable<Timestamp>,
         deleted_at -> Nullable<Timestamp>,
+        content_id -> Nullable<Int4>,
+        order -> Int4,
     }
 }
 
@@ -34,10 +46,12 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(steps -> contents (content_id));
 diesel::joinable!(steps -> funnels (variation_id));
 diesel::joinable!(variations -> funnels (funnel_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    contents,
     funnels,
     steps,
     variations,
