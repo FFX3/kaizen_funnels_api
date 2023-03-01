@@ -18,6 +18,8 @@ diesel::table! {
         created_at -> Timestamp,
         updated_at -> Nullable<Timestamp>,
         deleted_at -> Nullable<Timestamp>,
+        mark_a -> Nullable<Timestamp>,
+        mark_b -> Nullable<Timestamp>,
     }
 }
 

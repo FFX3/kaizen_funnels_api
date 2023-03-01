@@ -31,6 +31,7 @@ pub fn soft_delete_funnel(id: i32) -> () {
     let conn = &mut establish_connection();
     diesel::update(funnels::table)
         .filter(funnels::id.eq(id))
+        .filter(funnels::deleted_at.is_null())
         .set(funnels::deleted_at.eq(std::time::SystemTime::now()))
         .execute(conn)
         .expect("Error soft deleting funnel");

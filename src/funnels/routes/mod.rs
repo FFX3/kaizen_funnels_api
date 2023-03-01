@@ -8,13 +8,18 @@ pub fn get_funnel_routes() -> Vec<Route> {
         funnels::create,
         funnels::list,
         funnels::delete,
-        funnels::list_variations
+        funnels::list_variations,
+        funnels::list_ab_variations
     ]
 }
 
 pub fn get_variation_routes() -> Vec<Route> {
     routes![
         variations::create,
-        variations::list
+        variations::list,
+        variations::delete,
+        variations::mark_a,
+        variations::mark_b,
+        variations::mark_winner
     ]
 }

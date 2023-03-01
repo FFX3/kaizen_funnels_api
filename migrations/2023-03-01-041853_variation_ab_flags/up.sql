@@ -1,0 +1,3 @@
+ALTER TABLE variations
+ADD mark_a TIMESTAMP,
+ADD mark_b TIMESTAMP;

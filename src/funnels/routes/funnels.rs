@@ -1,4 +1,5 @@
 use rocket::serde::json::Json;
+use rocket::serde::Serialize;
 use crate::funnels::models::funnel::Funnel;
 use crate::funnels::requests::new_funnel::NewFunnelRequest;
 use crate::funnels::responses::funnel::FunnelResponse;
@@ -7,7 +8,7 @@ use crate::funnels::actions::funnel::{
     create_funnel, 
     soft_delete_funnel,
 };
-use crate::funnels::actions::variation::get_all_active_variations_from_funnel_id;
+use crate::funnels::actions::variation::{get_all_active_variations_from_funnel_id, get_ab_variations_by_funnel_id};
 use crate::funnels::responses::variation::*;
 
 trait FromFunnel {
@@ -55,4 +56,18 @@ pub fn list_variations(id: i32) -> Json<Vec<VariationResponse>> {
         .map(|variation| (VariationResponse::from_variation(variation)))
         .collect();
     Json(response)
+}
+
+#[derive(Serialize)]
+pub struct ABResponse {
+    pub a: VariationResponse,
+    pub b: VariationResponse
+}
+#[get("/<id>/variations/ab")]
+pub fn list_ab_variations(id: i32) -> Json<ABResponse> {
+    let (a, b) = get_ab_variations_by_funnel_id(id);
+    Json(ABResponse { 
+        a: VariationResponse::from_variation(a),
+        b: VariationResponse::from_variation(b),
+    })
 }

@@ -12,7 +12,9 @@ pub struct Variation {
     pub funnel_id: i32,
     pub created_at: SystemTime,
     pub updated_at: Option<SystemTime>,
-    pub deleted_at: Option<SystemTime>
+    pub deleted_at: Option<SystemTime>,
+    pub mark_a: Option<SystemTime>,
+    pub mark_b: Option<SystemTime>,
 }
 
 #[derive(Insertable)]
