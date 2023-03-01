@@ -2,6 +2,7 @@ use rocket::Route;
 
 mod funnels;
 mod variations;
+mod steps;
 
 pub fn get_funnel_routes() -> Vec<Route> {
     routes![
@@ -23,5 +24,14 @@ pub fn get_variation_routes() -> Vec<Route> {
         variations::mark_a,
         variations::mark_b,
         variations::mark_winner
+    ]
+}
+
+pub fn get_step_routes() -> Vec<Route> {
+    routes![
+        steps::create,
+        steps::update,
+        steps::list,
+        steps::delete,
     ]
 }

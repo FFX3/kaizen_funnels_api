@@ -9,8 +9,7 @@ mod actions;
 mod models;
 
 mod routes;
-use routes::get_funnel_routes;
-use routes::get_variation_routes;
+use routes::*;
 
 
 pub fn build() -> Container {
@@ -18,6 +17,7 @@ pub fn build() -> Container {
         route_blocks: vec![
             RouteBlock { path: "/v1/funnels".to_owned(), get_routes: get_funnel_routes },
             RouteBlock { path: "/v1/variations".to_owned(), get_routes: get_variation_routes },
+            RouteBlock { path: "/v1/steps".to_owned(), get_routes: get_step_routes },
         ]
     }
 }
