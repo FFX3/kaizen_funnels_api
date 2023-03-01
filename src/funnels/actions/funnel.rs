@@ -5,7 +5,10 @@ use crate::funnels::models::funnel::{
     NewFunnel,
     Funnel,
 };
-use crate::funnels::requests::new_funnel::NewFunnelRequest;
+use crate::funnels::requests::new_funnel::{
+    NewFunnelRequest,
+    UpdateFunnelRequest
+};
 
 pub fn get_all_active_funnels() -> Vec<Funnel> {
     let conn = &mut establish_connection();
@@ -25,6 +28,19 @@ pub fn create_funnel(funnel_request: NewFunnelRequest) -> Funnel {
         .values(&new_funnel)
         .get_result(conn)
         .expect("Error saving new funnel")
+}
+
+pub fn update_funnel(id: i32, funnel_request: UpdateFunnelRequest) -> () {
+    let conn = &mut establish_connection();
+    diesel::update(funnels::table)
+        .filter(funnels::id.eq(id))
+        .filter(funnels::deleted_at.is_null())
+        .set((
+            funnels::label.eq(funnel_request.label),
+            funnels::updated_at.eq(std::time::SystemTime::now())
+        ))
+        .execute(conn)
+        .expect("Error updating funne");
 }
 
 pub fn soft_delete_funnel(id: i32) -> () {

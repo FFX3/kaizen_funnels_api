@@ -1,8 +1,12 @@
 use rocket::serde::json::Json;
-use crate::funnels::requests::new_variation::NewVariationRequest;
+use crate::funnels::requests::new_variation::{
+    NewVariationRequest,
+    UpdateVariationRequest
+};
 use crate::funnels::responses::variation::VariationResponse;
 use crate::funnels::actions::variation::{
     create_variation,
+    update_variation,
     get_all_active_variations,
     soft_delete_variation, 
     mark_variation_as_a, 
@@ -16,6 +20,11 @@ use crate::funnels::responses::variation::*;
 pub fn create(variation_request: Json<NewVariationRequest>) -> Json<VariationResponse> {
     let variation = create_variation(variation_request.into_inner());
     Json(VariationResponse::from_variation(variation))
+}
+
+#[put("/<id>", data = "<funnel_request>")]
+pub fn update(id: i32, funnel_request: Json<UpdateVariationRequest>) -> () {
+    update_variation(id, funnel_request.into_inner());
 }
 
 #[get("/")]

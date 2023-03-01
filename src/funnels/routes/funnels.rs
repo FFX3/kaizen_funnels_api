@@ -1,11 +1,15 @@
 use rocket::serde::json::Json;
 use rocket::serde::Serialize;
 use crate::funnels::models::funnel::Funnel;
-use crate::funnels::requests::new_funnel::NewFunnelRequest;
+use crate::funnels::requests::new_funnel::{
+    NewFunnelRequest,
+    UpdateFunnelRequest
+};
 use crate::funnels::responses::funnel::FunnelResponse;
 use crate::funnels::actions::funnel::{
     get_all_active_funnels,
     create_funnel, 
+    update_funnel, 
     soft_delete_funnel,
 };
 use crate::funnels::actions::variation::{get_all_active_variations_from_funnel_id, get_ab_variations_by_funnel_id};
@@ -31,6 +35,11 @@ pub fn create(funnel_request: Json<NewFunnelRequest>) -> Json<FunnelResponse> {
         id: funnel.id,
         label: funnel.label.to_owned()
     })
+}
+
+#[put("/<id>", data = "<funnel_request>")]
+pub fn update(id: i32, funnel_request: Json<UpdateFunnelRequest>) -> () {
+    update_funnel(id, funnel_request.into_inner());
 }
 
 #[get("/")]

@@ -5,7 +5,10 @@ use crate::funnels::models::variation::{
     NewVariation,
     Variation,
 };
-use crate::funnels::requests::new_variation::NewVariationRequest;
+use crate::funnels::requests::new_variation::{
+    NewVariationRequest,
+    UpdateVariationRequest
+};
 
 pub fn create_variation(variation_request: NewVariationRequest) -> Variation {
     let conn = &mut establish_connection();
@@ -18,6 +21,19 @@ pub fn create_variation(variation_request: NewVariationRequest) -> Variation {
         .values(&new_variation)
         .get_result(conn)
         .expect("Error saving new variation")
+}
+
+pub fn update_variation(id: i32, variation_request: UpdateVariationRequest) -> () {
+    let conn = &mut establish_connection();
+    diesel::update(variations::table)
+        .filter(variations::id.eq(id))
+        .filter(variations::deleted_at.is_null())
+        .set((
+            variations::label.eq(variation_request.label),
+            variations::updated_at.eq(std::time::SystemTime::now())
+        ))
+        .execute(conn)
+        .expect("Error soft deleting variation");
 }
 
 pub fn get_all_active_variations() -> Vec<Variation> {

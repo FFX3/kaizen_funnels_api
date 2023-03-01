@@ -9,3 +9,9 @@ pub struct NewVariationRequest {
     pub label: String,
     pub funnel_id: i32
 }
+
+#[derive(Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct UpdateVariationRequest {
+    pub label: String,
+}
