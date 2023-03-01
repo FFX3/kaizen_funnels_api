@@ -28,7 +28,7 @@ diesel::table! {
         created_at -> Timestamp,
         updated_at -> Nullable<Timestamp>,
         deleted_at -> Nullable<Timestamp>,
-        content_id -> Nullable<Int4>,
+        content_id -> Int4,
         order -> Int4,
     }
 }

@@ -23,25 +23,41 @@ pub fn get_all_active_steps_from_variation_id(id: i32) -> Vec<Step> {
         .expect("Error loading variation")
 }
 
+pub fn get_step_content(id: i32) -> String {
+    let conn = &mut establish_connection();
+    contents::table
+        .inner_join(steps::table)
+        .filter(steps::deleted_at.is_null())
+        .filter(steps::id.eq(id))
+        .select(Content::as_select())
+        .get_result::<Content>(conn)
+        .expect("Error fetching content")
+        .content
+        .to_owned()
+}
+
 pub fn update_step_content(id: i32, content_request: NewContentRequest) -> () {
     let new_content = NewContent {
         content: &content_request.content,
         created_at: std::time::SystemTime::now()
     };
     let conn = &mut establish_connection();
-    let content: Content = diesel::insert_into(contents::table)
-        .values(&new_content)
-        .get_result(conn)
-        .expect("Error saving new content");
-    diesel::update(steps::table)
-        .filter(steps::id.eq(id))
-        .filter(steps::deleted_at.is_null())
+    diesel::update(contents::table)
+        .filter(
+            steps::table
+                .filter(steps::deleted_at.is_null())
+                .filter(steps::id.eq(id))
+                .filter(steps::content_id.eq(contents::id))
+                .count()
+                .single_value()
+                .eq(1)
+        )
         .set((
-            steps::content_id.eq(content.id),
-            steps::updated_at.eq(std::time::SystemTime::now())
+            contents::content.eq(new_content.content),
+            contents::updated_at.eq(std::time::SystemTime::now())
         ))
         .execute(conn)
-        .expect("Error updating step");
+        .expect("Error saving new content");
 }
 
 pub fn get_all_active_steps() -> Vec<Step> {
@@ -59,10 +75,24 @@ pub fn create_step(step_request: NewStepRequest) -> Step {
         title: &step_request.title,
         variation_id: step_request.variation_id,
         order: step_request.order,
+    };
+
+    let new_content = NewContent {
+        content: "",
         created_at: std::time::SystemTime::now()
     };
+
+    let content: Content = diesel::insert_into(contents::table)
+        .values(&new_content)
+        .get_result(conn)
+        .expect("Error creating content entry");
+
     diesel::insert_into(steps::table)
-        .values(&new_step)
+        .values((
+            &new_step, 
+            steps::content_id.eq(content.id),
+            steps::created_at.eq(std::time::SystemTime::now())
+        ))
         .get_result(conn)
         .expect("Error saving new step")
 }

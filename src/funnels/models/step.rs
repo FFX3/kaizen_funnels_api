@@ -15,7 +15,7 @@ pub struct Step {
     pub created_at: SystemTime,
     pub updated_at: Option<SystemTime>,
     pub deleted_at: Option<SystemTime>,
-    pub content_id: Option<i32>,
+    pub content_id: i32,
     pub order: i32,
 }
 
@@ -23,7 +23,6 @@ pub struct Step {
 #[diesel(table_name = steps)]
 pub struct NewStep<'a> {
     pub title: &'a str,
-    pub created_at: SystemTime,
     pub variation_id: i32,
     pub order: i32,
 }

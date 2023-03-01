@@ -10,8 +10,14 @@ use crate::funnels::actions::step::{
     create_step, 
     update_step, 
     soft_delete_step,
-    update_step_content
+    update_step_content,
+    get_step_content,
 };
+
+#[get("/<id>/content")]
+pub fn get_content(id: i32) -> String {
+    get_step_content(id)
+}
 
 #[put("/<id>/content", data = "<content_request>")]
 pub fn update_content(id: i32, content_request: Json<NewContentRequest>) -> () {
