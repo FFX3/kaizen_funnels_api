@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 rocket = { version = "0.5.0-rc.2", features = ["json"] }
-diesel = { version = "2.0.0", features = ["postgres"] }
+diesel = { version = "2.0.0", features = ["postgres", "postgres_backend", "serde_json"] }
 dotenvy = "0.15"
 serde = { version = "1.0", features = ["derive"] }
+diesel_as_jsonb = { version = "1.0.0" }

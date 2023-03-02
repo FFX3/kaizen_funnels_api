@@ -3,10 +3,11 @@
 diesel::table! {
     contents (id) {
         id -> Int4,
-        content -> Text,
+        content -> Nullable<Text>,
         created_at -> Timestamp,
         updated_at -> Nullable<Timestamp>,
         deleted_at -> Nullable<Timestamp>,
+        grapesjs -> Nullable<Text>,
     }
 }
 

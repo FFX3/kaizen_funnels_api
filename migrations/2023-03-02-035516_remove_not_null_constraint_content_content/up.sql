@@ -1,0 +1,2 @@
+ALTER TABLE contents
+ALTER COLUMN content DROP NOT NULL;

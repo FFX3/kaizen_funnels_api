@@ -5,12 +5,11 @@ use crate::funnels::models::step::{
     NewStep,
     Step,
 };
-use crate::funnels::models::content::{ NewContent, Content };
+use crate::funnels::models::content::Content;
 use crate::funnels::requests::new_step::{
     NewStepRequest,
     UpdateStepRequest
 };
-
 use crate::funnels::requests::new_content::NewContentRequest;
 
 pub fn get_all_active_steps_from_variation_id(id: i32) -> Vec<Step> {
@@ -23,25 +22,32 @@ pub fn get_all_active_steps_from_variation_id(id: i32) -> Vec<Step> {
         .expect("Error loading variation")
 }
 
-pub fn get_step_content(id: i32) -> String {
+pub fn get_step_content(id: i32) -> Option<String> {
     let conn = &mut establish_connection();
     contents::table
         .inner_join(steps::table)
         .filter(steps::deleted_at.is_null())
         .filter(steps::id.eq(id))
-        .select(Content::as_select())
-        .get_result::<Content>(conn)
+        .select(contents::content)
+        .get_result::<Option<String>>(conn)
         .expect("Error fetching content")
-        .content
-        .to_owned()
+}
+
+pub fn get_step_grapesjs(id: i32) -> Option<String> {
+    let conn = &mut establish_connection();
+    contents::table
+        .inner_join(steps::table)
+        .filter(steps::deleted_at.is_null())
+        .filter(steps::id.eq(id))
+        .select(contents::grapesjs)
+        .get_result::<Option<String>>(conn)
+        .expect("Error fetching content")
+
 }
 
 pub fn update_step_content(id: i32, content_request: NewContentRequest) -> () {
-    let new_content = NewContent {
-        content: &content_request.content,
-        created_at: std::time::SystemTime::now()
-    };
     let conn = &mut establish_connection();
+
     diesel::update(contents::table)
         .filter(
             steps::table
@@ -52,10 +58,7 @@ pub fn update_step_content(id: i32, content_request: NewContentRequest) -> () {
                 .single_value()
                 .eq(1)
         )
-        .set((
-            contents::content.eq(new_content.content),
-            contents::updated_at.eq(std::time::SystemTime::now())
-        ))
+        .set(&content_request)
         .execute(conn)
         .expect("Error saving new content");
 }
@@ -77,13 +80,9 @@ pub fn create_step(step_request: NewStepRequest) -> Step {
         order: step_request.order,
     };
 
-    let new_content = NewContent {
-        content: "",
-        created_at: std::time::SystemTime::now()
-    };
 
     let content: Content = diesel::insert_into(contents::table)
-        .values(&new_content)
+        .values(contents::created_at.eq(std::time::SystemTime::now()))
         .get_result(conn)
         .expect("Error creating content entry");
 

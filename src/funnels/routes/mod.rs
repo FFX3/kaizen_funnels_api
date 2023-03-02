@@ -35,6 +35,7 @@ pub fn get_step_routes() -> Vec<Route> {
         steps::list,
         steps::delete,
         steps::get_content,
+        steps::get_grapesjs,
         steps::update_content,
     ]
 }

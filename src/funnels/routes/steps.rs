@@ -12,14 +12,20 @@ use crate::funnels::actions::step::{
     soft_delete_step,
     update_step_content,
     get_step_content,
+    get_step_grapesjs
 };
 
 #[get("/<id>/content")]
-pub fn get_content(id: i32) -> String {
+pub fn get_content(id: i32) -> Option<String> {
     get_step_content(id)
 }
 
-#[put("/<id>/content", data = "<content_request>")]
+#[get("/<id>/grapesjs")]
+pub fn get_grapesjs(id: i32) -> Option<String> {
+    get_step_grapesjs(id)
+}
+
+#[patch("/<id>/content", data = "<content_request>")]
 pub fn update_content(id: i32, content_request: Json<NewContentRequest>) -> () {
     update_step_content(id, content_request.into_inner());
 }
