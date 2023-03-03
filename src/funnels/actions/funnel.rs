@@ -17,6 +17,14 @@ pub fn get_all_active_funnels() -> Vec<Funnel> {
         .expect("Error loading post")
 }
 
+pub fn get_funnel_by_id(id: i32) -> Option<Funnel> {
+    let conn = &mut establish_connection();
+    funnels::table
+        .filter(funnels::id.eq(id))
+        .first(conn)
+        .optional()
+        .expect("Error loading funnel")
+}
 
 pub fn create_funnel(funnel_request: NewFunnelRequest) -> Funnel {
     let conn = &mut establish_connection();

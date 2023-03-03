@@ -10,7 +10,7 @@ use crate::funnels::actions::funnel::{
     get_all_active_funnels,
     create_funnel, 
     update_funnel, 
-    soft_delete_funnel,
+    soft_delete_funnel, get_funnel_by_id,
 };
 use crate::funnels::actions::variation::{get_all_active_variations_from_funnel_id, get_ab_variations_by_funnel_id};
 use crate::funnels::responses::variation::*;
@@ -23,7 +23,8 @@ impl FromFunnel for FunnelResponse {
     fn from_funnel(funnel: Funnel) -> Self {
         Self {
             id: funnel.id,
-            label: funnel.label.to_owned()
+            label: funnel.label.to_owned(),
+            variations: None
         }
     }
 }
@@ -31,10 +32,7 @@ impl FromFunnel for FunnelResponse {
 #[post("/", data = "<funnel_request>")]
 pub fn create(funnel_request: Json<NewFunnelRequest>) -> Json<FunnelResponse> {
     let funnel = create_funnel(funnel_request.into_inner());
-    Json(FunnelResponse {
-        id: funnel.id,
-        label: funnel.label.to_owned()
-    })
+    Json(FunnelResponse::from_funnel(funnel))
 }
 
 #[put("/<id>", data = "<funnel_request>")]
@@ -50,6 +48,19 @@ pub fn list() -> Json<Vec<FunnelResponse>> {
         .map(|funnel| (FunnelResponse::from_funnel(funnel)))
         .collect();
     Json(response)
+}
+
+#[get("/<id>")]
+pub fn get_one(id: i32) -> Json<FunnelResponse> {
+    let funnel = get_funnel_by_id(id);
+    let mut funnel_response = FunnelResponse::from_funnel(funnel.expect("figure out how to handle not found"));
+    let variation_list = get_all_active_variations_from_funnel_id(id);
+    let variation_response_list: Vec<VariationResponse> = variation_list
+        .into_iter()
+        .map(|variation| (VariationResponse::from_variation(variation)))
+        .collect();
+    funnel_response.variations = Some(variation_response_list);
+    Json(funnel_response)
 }
 
 #[delete("/<id>")]

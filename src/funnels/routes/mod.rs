@@ -9,6 +9,7 @@ pub fn get_funnel_routes() -> Vec<Route> {
         funnels::create,
         funnels::update,
         funnels::list,
+        funnels::get_one,
         funnels::delete,
         funnels::list_variations,
         funnels::list_ab_variations
