@@ -4,6 +4,7 @@ mod container;
 mod funnels;
 mod schema;
 mod database;
+mod cors;
 
 #[macro_use] extern crate rocket;
 
@@ -20,6 +21,6 @@ impl MountsContainer for Rocket<Build> {
 #[launch]
 async fn launch() -> Rocket<Build> {
     database::establish_connection();
-    rocket::build()
+    cors::configure_cors(rocket::build())
         .mount_container(funnels::build())
 }
