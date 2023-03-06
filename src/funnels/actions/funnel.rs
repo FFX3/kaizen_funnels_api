@@ -30,6 +30,7 @@ pub fn create_funnel(funnel_request: NewFunnelRequest) -> Funnel {
     let conn = &mut establish_connection();
     let new_funnel = NewFunnel {
         label: &funnel_request.label,
+        slug: &funnel_request.slug,
         created_at: std::time::SystemTime::now()
     };
     diesel::insert_into(funnels::table)

@@ -24,6 +24,7 @@ impl FromFunnel for FunnelResponse {
         Self {
             id: funnel.id,
             label: funnel.label.to_owned(),
+            slug: if let Some(slug) = funnel.slug { slug } else { "".to_owned() },
             variations: None
         }
     }

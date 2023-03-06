@@ -44,6 +44,15 @@ pub fn get_all_active_variations() -> Vec<Variation> {
         .expect("Error loading variation")
 }
 
+pub fn get_variation_by_id(id: i32) -> Option<Variation> {
+    let conn = &mut establish_connection();
+    variations::table
+        .filter(variations::id.eq(id))
+        .first(conn)
+        .optional()
+        .expect("Error loading funnel")
+}
+
 pub fn get_all_active_variations_from_funnel_id(id: i32) -> Vec<Variation> {
     let conn = &mut establish_connection();
     variations::table

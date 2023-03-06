@@ -18,6 +18,7 @@ diesel::table! {
         created_at -> Timestamp,
         updated_at -> Nullable<Timestamp>,
         deleted_at -> Nullable<Timestamp>,
+        slug -> Nullable<Varchar>,
     }
 }
 

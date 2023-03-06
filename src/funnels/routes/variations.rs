@@ -6,6 +6,7 @@ use crate::funnels::requests::new_variation::{
 use crate::funnels::responses::variation::VariationResponse;
 use crate::funnels::responses::step::*;
 use crate::funnels::actions::variation::{
+    get_variation_by_id,
     create_variation,
     update_variation,
     get_all_active_variations,
@@ -14,12 +15,12 @@ use crate::funnels::actions::variation::{
     mark_variation_as_b, 
     mark_variation_as_winner
 };
-use crate::funnels::actions::step::get_all_active_steps_from_variation_id;
+use crate::funnels::actions::step::get_all_steps_from_variation_id;
 use crate::funnels::responses::variation::*;
 
 #[get("/<id>/steps")]
 pub fn list_steps(id: i32) -> Json<Vec<StepResponse>> {
-    let step_list = get_all_active_steps_from_variation_id(id);
+    let step_list = get_all_steps_from_variation_id(id);
     let response = step_list
         .into_iter()
         .map(|step| (StepResponse::from_step(step)))
@@ -46,6 +47,19 @@ pub fn list() -> Json<Vec<VariationResponse>> {
         .map(|variation| (VariationResponse::from_variation(variation)))
         .collect();
     Json(response)
+}
+
+#[get("/<id>")]
+pub fn get_one(id: i32) -> Json<VariationResponse> {
+    let variation = get_variation_by_id(id);
+    let mut variation_response = VariationResponse::from_variation(variation.expect("figure out how to handle not found"));
+    let step_list = get_all_steps_from_variation_id(id);
+    let step_response_list: Vec<StepResponse> = step_list
+        .into_iter()
+        .map(|step| (StepResponse::from_step(step)))
+        .collect();
+    variation_response.steps = step_response_list;
+    Json(variation_response)
 }
 
 #[delete("/<id>")]

@@ -21,6 +21,7 @@ pub fn get_variation_routes() -> Vec<Route> {
         variations::create,
         variations::update,
         variations::list,
+        variations::get_one,
         variations::delete,
         variations::mark_a,
         variations::mark_b,

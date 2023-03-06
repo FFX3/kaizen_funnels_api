@@ -12,7 +12,7 @@ use crate::funnels::requests::new_step::{
 };
 use crate::funnels::requests::new_content::NewContentRequest;
 
-pub fn get_all_active_steps_from_variation_id(id: i32) -> Vec<Step> {
+pub fn get_all_steps_from_variation_id(id: i32) -> Vec<Step> {
     let conn = &mut establish_connection();
     steps::table
         .filter(steps::deleted_at.is_null())

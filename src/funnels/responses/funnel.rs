@@ -6,5 +6,6 @@ use crate::funnels::responses::variation::VariationResponse;
 pub struct FunnelResponse {
     pub id: i32,
     pub label: String,
-    pub variations: Option<Vec<VariationResponse>>
+    pub slug: String,
+    pub variations: Option<Vec<VariationResponse>>,
 }
