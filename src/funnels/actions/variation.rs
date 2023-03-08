@@ -1,5 +1,6 @@
 use crate::database::establish_connection;
 use diesel::prelude::*;
+use diesel::sql_query;
 use crate::schema::variations;
 use crate::funnels::models::variation::{
     NewVariation,
@@ -122,4 +123,25 @@ pub fn mark_variation_as_winner(id: i32) -> () {
         ))
         .execute(conn)
         .expect("Error marking variation as winner");
+}
+
+pub fn reorder_variation_steps(id: i32, order: Vec<i32>) -> () {
+    let mut query_string = String::from("UPDATE steps SET \"order\" = (CASE ");
+    for (index, step_id) in order.iter().enumerate() {
+        query_string.push_str(" WHEN id=");
+        query_string.push_str(&step_id.to_string());
+        query_string.push_str(" THEN ");
+        query_string.push_str(&index.to_string());
+    }
+    query_string.push_str(" END)");
+    query_string.push_str("WHERE variation_id=");
+    query_string.push_str(&id.to_string());
+    query_string.push_str(" AND id IN (");
+    let mut ins = order.iter().map(|id| id.to_string() + ",").collect::<String>();
+    ins.pop();
+    query_string.push_str(&ins);
+    query_string.push_str(");");
+    let conn = &mut establish_connection();
+    println!("{}", query_string);
+    _ = sql_query(query_string).execute(conn);
 }

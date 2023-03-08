@@ -13,7 +13,8 @@ use crate::funnels::actions::variation::{
     soft_delete_variation, 
     mark_variation_as_a, 
     mark_variation_as_b, 
-    mark_variation_as_winner
+    mark_variation_as_winner,
+    reorder_variation_steps,
 };
 use crate::funnels::actions::step::get_all_steps_from_variation_id;
 use crate::funnels::responses::variation::*;
@@ -80,4 +81,9 @@ pub fn mark_b(id: i32) -> () {
 #[patch("/winner/<id>")]
 pub fn mark_winner(id: i32) -> () {
     mark_variation_as_winner(id);
+}
+
+#[patch("/reorder-steps/<id>", data="<order>")]
+pub fn reorder_steps(id: i32, order: Json<Vec<i32>>) -> () {
+    reorder_variation_steps(id, order.into_inner());
 }

@@ -27,6 +27,7 @@ pub fn get_variation_routes() -> Vec<Route> {
         variations::mark_b,
         variations::mark_winner,
         variations::list_steps,
+        variations::reorder_steps,
     ]
 }
 
