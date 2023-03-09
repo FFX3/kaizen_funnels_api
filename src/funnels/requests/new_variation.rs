@@ -14,4 +14,5 @@ pub struct NewVariationRequest {
 #[serde(crate = "rocket::serde")]
 pub struct UpdateVariationRequest {
     pub label: String,
+    pub step_order: Option<Vec<i32>>,
 }

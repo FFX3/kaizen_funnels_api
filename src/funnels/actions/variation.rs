@@ -24,13 +24,13 @@ pub fn create_variation(variation_request: NewVariationRequest) -> Variation {
         .expect("Error saving new variation")
 }
 
-pub fn update_variation(id: i32, variation_request: UpdateVariationRequest) -> () {
+pub fn update_variation(id: i32, variation_request: &UpdateVariationRequest) -> () {
     let conn = &mut establish_connection();
     diesel::update(variations::table)
         .filter(variations::id.eq(id))
         .filter(variations::deleted_at.is_null())
         .set((
-            variations::label.eq(variation_request.label),
+            variations::label.eq(&variation_request.label.to_string()),
             variations::updated_at.eq(std::time::SystemTime::now())
         ))
         .execute(conn)

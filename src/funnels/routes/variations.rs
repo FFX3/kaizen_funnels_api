@@ -19,6 +19,8 @@ use crate::funnels::actions::variation::{
 use crate::funnels::actions::step::get_all_steps_from_variation_id;
 use crate::funnels::responses::variation::*;
 
+use super::funnels;
+
 #[get("/<id>/steps")]
 pub fn list_steps(id: i32) -> Json<Vec<StepResponse>> {
     let step_list = get_all_steps_from_variation_id(id);
@@ -35,9 +37,13 @@ pub fn create(variation_request: Json<NewVariationRequest>) -> Json<VariationRes
     Json(VariationResponse::from_variation(variation))
 }
 
-#[put("/<id>", data = "<funnel_request>")]
-pub fn update(id: i32, funnel_request: Json<UpdateVariationRequest>) -> () {
-    update_variation(id, funnel_request.into_inner());
+#[put("/<id>", data = "<variation_request>")]
+pub fn update(id: i32, variation_request: Json<UpdateVariationRequest>) -> () {
+    let update_variation_request = variation_request.into_inner();
+    update_variation(id, &update_variation_request);
+    if let Some(step_order) = &update_variation_request.step_order {
+        reorder_variation_steps(id, step_order.to_owned());
+    }
 }
 
 #[get("/")]
