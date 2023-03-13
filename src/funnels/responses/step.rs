@@ -7,6 +7,7 @@ pub struct StepResponse {
     pub id: i32,
     pub title: String,
     pub variation_id: i32,
+    pub content_id: i32,
     pub order: i32,
 }
 
@@ -20,6 +21,7 @@ impl FromStep for StepResponse {
             id: step.id,
             title: step.title.to_owned(),
             variation_id: step.variation_id,
+            content_id: step.content_id,
             order: step.order,
         }
     }

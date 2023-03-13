@@ -22,8 +22,13 @@ pub fn get_content(id: i32) -> Option<String> {
 }
 
 #[get("/<id>/grapesjs")]
-pub fn get_grapesjs(id: i32) -> Option<String> {
-    get_step_grapesjs(id)
+pub fn get_grapesjs(id: i32) -> String {
+    let grapesjs_cache = get_step_grapesjs(id);
+    if let Some(cache) = grapesjs_cache {
+        return cache;
+    } else {
+        return String::from("");
+    }
 }
 
 
