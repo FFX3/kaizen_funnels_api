@@ -19,8 +19,6 @@ use crate::funnels::actions::variation::{
 use crate::funnels::actions::step::get_all_steps_from_variation_id;
 use crate::funnels::responses::variation::*;
 
-use super::funnels;
-
 #[get("/<id>/steps")]
 pub fn list_steps(id: i32) -> Json<Vec<StepResponse>> {
     let step_list = get_all_steps_from_variation_id(id);

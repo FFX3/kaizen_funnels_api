@@ -63,6 +63,15 @@ pub fn update_step_content(id: i32, content_request: NewContentRequest) -> () {
         .expect("Error saving new content");
 }
 
+pub fn get_one_step(id: i32) -> Step {
+    let conn = &mut establish_connection();
+    steps::table
+        .filter(steps::deleted_at.is_null())
+        .filter(steps::id.eq(id))
+        .first::<Step>(conn)
+        .expect("Error loading post")
+}
+
 pub fn get_all_active_steps() -> Vec<Step> {
     let conn = &mut establish_connection();
     steps::table

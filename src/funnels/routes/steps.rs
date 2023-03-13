@@ -12,7 +12,8 @@ use crate::funnels::actions::step::{
     soft_delete_step,
     update_step_content,
     get_step_content,
-    get_step_grapesjs
+    get_step_grapesjs,
+    get_one_step,
 };
 
 #[get("/<id>/content")]
@@ -23,6 +24,12 @@ pub fn get_content(id: i32) -> Option<String> {
 #[get("/<id>/grapesjs")]
 pub fn get_grapesjs(id: i32) -> Option<String> {
     get_step_grapesjs(id)
+}
+
+
+#[get("/<id>")]
+pub fn get_one(id: i32) -> Json<StepResponse> {
+    Json(StepResponse::from_step(get_one_step(id)))
 }
 
 #[patch("/<id>/content", data = "<content_request>")]
