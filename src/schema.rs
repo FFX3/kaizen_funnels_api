@@ -49,7 +49,7 @@ diesel::table! {
 }
 
 diesel::joinable!(steps -> contents (content_id));
-diesel::joinable!(steps -> funnels (variation_id));
+diesel::joinable!(steps -> variations (variation_id));
 diesel::joinable!(variations -> funnels (funnel_id));
 
 diesel::allow_tables_to_appear_in_same_query!(

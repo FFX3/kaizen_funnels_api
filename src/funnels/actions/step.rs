@@ -82,6 +82,7 @@ pub fn get_all_active_steps() -> Vec<Step> {
 
 
 pub fn create_step(step_request: NewStepRequest) -> Step {
+    println!("variation_id: {}", step_request.variation_id);
     let conn = &mut establish_connection();
     let new_step = NewStep {
         title: &step_request.title,
