@@ -13,6 +13,7 @@ use crate::funnels::requests::new_funnel::{
 pub fn get_all_active_funnels() -> Vec<Funnel> {
     let conn = &mut establish_connection();
     funnels::table
+        .filter(funnels::deleted_at.is_null())
         .load::<Funnel>(conn)
         .expect("Error loading post")
 }
