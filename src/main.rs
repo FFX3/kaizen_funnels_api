@@ -2,6 +2,7 @@ use rocket::Rocket;
 use rocket::Build;
 mod container;
 mod funnels;
+mod media;
 mod schema;
 mod database;
 mod cors;
@@ -22,5 +23,6 @@ impl MountsContainer for Rocket<Build> {
 async fn launch() -> Rocket<Build> {
     database::establish_connection();
     cors::configure_cors(rocket::build())
+        .mount_container(media::build())
         .mount_container(funnels::build())
 }
