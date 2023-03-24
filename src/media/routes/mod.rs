@@ -5,6 +5,7 @@ use rocket::serde::{
     Serialize
 };
 use cloud_storage::Client;
+use base64::{Engine, engine::general_purpose};
 
 pub fn get_media_routes() -> Vec<Route> {
     routes![
@@ -16,7 +17,8 @@ pub fn get_media_routes() -> Vec<Route> {
 #[derive(Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 struct MediaConversionRequest {
-    base64: String
+    base64: String,
+    file_name: String,
 }
 
 #[derive(Debug)]
@@ -29,11 +31,17 @@ struct MediaConversionResponse {
 #[post("/", data = "<media_conversion_request>")]
 async fn convert_base64_media(media_conversion_request: Json<MediaConversionRequest>) -> Json<MediaConversionResponse> {
     let client = Client::default();
-    let bucket = client.bucket().read("funnel-cms").await.unwrap(); //fix unwrap on external api
+    let encoded_media: Vec<&str> = media_conversion_request.base64.split(";base64,").collect();
+    let split_start: Vec<&str> = encoded_media[0].split(":").collect();
+    let mime_type = split_start[1];
 
-    //TODO: https://www.reddit.com/r/rust/comments/bzacoc/question_converting_base64_representation_of_png/
-    //https://docs.rs/cloud-storage/latest/cloud_storage/
+    let bytes = general_purpose::STANDARD
+        .decode(encoded_media[1]).unwrap();
+    let file_path = "kaizen_marketing/".to_owned() + &media_conversion_request.file_name;
+    //TODO fix unwrap
+    let object = client.object().create("funnel-cms", bytes, &file_path, mime_type).await.unwrap();
+
     Json(MediaConversionResponse{
-        bucket_url: media_conversion_request.base64.to_owned(),
+        bucket_url: object.media_link,
     })
 }
