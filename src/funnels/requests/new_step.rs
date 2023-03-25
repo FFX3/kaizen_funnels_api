@@ -3,6 +3,8 @@ use rocket::serde::{
     Serialize,
 };
 
+use crate::funnels::models::step::Step;
+
 #[derive(Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct NewStepRequest {
@@ -16,4 +18,14 @@ pub struct NewStepRequest {
 pub struct UpdateStepRequest {
     pub title: String,
     pub order: i32,
+}
+
+impl NewStepRequest {
+    pub fn clone_from_step(step: &Step, variation_id: i32) -> NewStepRequest {
+        NewStepRequest {
+            title: step.title.to_string(),
+            order: step.order,
+            variation_id
+        }
+    }
 }

@@ -19,8 +19,8 @@ pub struct Variation {
 
 #[derive(Insertable)]
 #[diesel(table_name = variations)]
-pub struct NewVariation<'a> {
-    pub label: &'a str,
+pub struct NewVariation {
+    pub label: String,
     pub funnel_id: i32,
     pub created_at: SystemTime
 }

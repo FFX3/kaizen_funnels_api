@@ -31,7 +31,7 @@ pub fn list_steps(id: i32) -> Json<Vec<StepResponse>> {
 
 #[post("/", data = "<variation_request>")]
 pub fn create(variation_request: Json<NewVariationRequest>) -> Json<VariationResponse> {
-    let variation = create_variation(variation_request.into_inner());
+    let variation = create_variation(&variation_request.into_inner());
     Json(VariationResponse::from_variation(variation))
 }
 

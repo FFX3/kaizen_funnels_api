@@ -1,5 +1,6 @@
 use rocket::serde::json::Json;
 use rocket::serde::Serialize;
+use serde::Deserialize;
 use crate::funnels::models::funnel::Funnel;
 use crate::funnels::requests::new_funnel::{
     NewFunnelRequest,
@@ -10,7 +11,7 @@ use crate::funnels::actions::funnel::{
     get_all_active_funnels,
     create_funnel, 
     update_funnel, 
-    soft_delete_funnel, get_funnel_by_id,
+    soft_delete_funnel, get_funnel_by_id, create_funnel_with_cloned_variation,
 };
 use crate::funnels::actions::variation::{get_all_active_variations_from_funnel_id, get_ab_variations_by_funnel_id};
 use crate::funnels::responses::variation::*;
@@ -32,7 +33,7 @@ impl FromFunnel for FunnelResponse {
 
 #[post("/", data = "<funnel_request>")]
 pub fn create(funnel_request: Json<NewFunnelRequest>) -> Json<FunnelResponse> {
-    let funnel = create_funnel(funnel_request.into_inner());
+    let funnel = create_funnel(&funnel_request.into_inner());
     Json(FunnelResponse::from_funnel(funnel))
 }
 
@@ -91,4 +92,18 @@ pub fn list_ab_variations(id: i32) -> Json<ABResponse> {
         a: VariationResponse::from_variation(a),
         b: VariationResponse::from_variation(b),
     })
+}
+
+#[derive(Deserialize)]
+pub struct CloneRequest {
+    pub variation_id: i32,
+    pub funnel: NewFunnelRequest
+}
+#[post("/clone", data = "<clone_request>")]
+pub fn clone(clone_request: Json<CloneRequest>) -> Option<Json<FunnelResponse>> {
+    let new_funnel_result = create_funnel_with_cloned_variation(clone_request.variation_id, &clone_request.funnel);
+    if let Some(new_funnel) = new_funnel_result {
+        return Some(Json(FunnelResponse::from_funnel(new_funnel)));
+    }
+    None
 }

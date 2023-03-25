@@ -1,4 +1,7 @@
 use crate::database::establish_connection;
+use crate::funnels::models::step::Step;
+use crate::funnels::requests::new_content::NewContentRequest;
+use crate::funnels::requests::new_step::NewStepRequest;
 use diesel::prelude::*;
 use diesel::sql_query;
 use crate::schema::variations;
@@ -10,11 +13,12 @@ use crate::funnels::requests::new_variation::{
     NewVariationRequest,
     UpdateVariationRequest
 };
+use super::step::{get_all_steps_from_variation_id, create_step, update_step_content, get_step_content, get_step_grapesjs};
 
-pub fn create_variation(variation_request: NewVariationRequest) -> Variation {
+pub fn create_variation(variation_request: &NewVariationRequest) -> Variation {
     let conn = &mut establish_connection();
     let new_variation = NewVariation {
-        label: &variation_request.label,
+        label: variation_request.label.to_owned(),
         funnel_id: variation_request.funnel_id,
         created_at: std::time::SystemTime::now()
     };
@@ -63,7 +67,7 @@ pub fn get_all_active_variations_from_funnel_id(id: i32) -> Vec<Variation> {
         .expect("Error loading variation")
 }
 
-pub fn get_ab_variations_by_funnel_id(id: i32) -> (Variation, Variation) {
+pub fn get_a_variations_by_funnel_id(id: i32) -> Variation {
     let conn = &mut establish_connection();
     let a = variations::table
         .filter(variations::funnel_id.eq(id))
@@ -72,6 +76,11 @@ pub fn get_ab_variations_by_funnel_id(id: i32) -> (Variation, Variation) {
         .limit(1)
         .get_result(conn)
         .expect("Error loading variation");
+    a
+}
+
+pub fn get_b_variations_by_funnel_id(id: i32) -> Variation {
+    let conn = &mut establish_connection();
     let b = variations::table
         .filter(variations::funnel_id.eq(id))
         .filter(variations::mark_b.is_not_null())
@@ -79,7 +88,14 @@ pub fn get_ab_variations_by_funnel_id(id: i32) -> (Variation, Variation) {
         .limit(1)
         .get_result(conn)
         .expect("Error loading variation");
-    (a, b)
+    b
+}
+
+pub fn get_ab_variations_by_funnel_id(id: i32) -> (Variation, Variation) {
+    (
+        get_a_variations_by_funnel_id(id),
+        get_b_variations_by_funnel_id(id)
+    )
 }
 
 pub fn soft_delete_variation(id: i32) -> () {
@@ -144,4 +160,32 @@ pub fn reorder_variation_steps(id: i32, order: Vec<i32>) -> () {
     let conn = &mut establish_connection();
     println!("{}", query_string);
     _ = sql_query(query_string).execute(conn);
+}
+
+pub fn clone_variation(id: i32, variation_request: &NewVariationRequest) -> Option<Variation> {
+    let reference_variation = get_variation_by_id(id);
+    if reference_variation.is_none() {
+        return None;
+    }
+    let reference_variation = reference_variation.unwrap();
+
+    let new_variation = create_variation(variation_request);
+
+    clone_variation_steps(&reference_variation, &new_variation);
+
+    Some(new_variation)
+}
+
+fn clone_variation_steps(reference_variation: &Variation, new_variation: &Variation) {
+    let reference_steps: Vec<Step> = get_all_steps_from_variation_id(reference_variation.id);
+    reference_steps.into_iter().for_each(|reference_step| -> () {
+        let new_step_request = NewStepRequest::clone_from_step(&reference_step, new_variation.id);
+        let new_step = create_step(new_step_request);
+        //clone the steps content
+        let new_step_content_request = NewContentRequest {
+            content: get_step_content(reference_step.id),
+            grapesjs: get_step_grapesjs(reference_step.id)
+        };
+        update_step_content(new_step.id, new_step_content_request);
+    });
 }
