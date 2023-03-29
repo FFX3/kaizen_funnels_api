@@ -21,7 +21,11 @@ impl MountsContainer for Rocket<Build> {
 
 #[launch]
 async fn launch() -> Rocket<Build> {
-    database::establish_connection();
+    let result = database::run_migrations();
+    match result {
+        Ok(_) => println!("migrations success"),
+        Err(e) => println!("migration error: {e:?}"),
+    }
     cors::configure_cors(rocket::build())
         .mount_container(media::build())
         .mount_container(funnels::build())
