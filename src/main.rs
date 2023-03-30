@@ -1,5 +1,6 @@
 use rocket::Rocket;
 use rocket::Build;
+use std::env;
 mod container;
 mod funnels;
 mod media;
@@ -21,10 +22,13 @@ impl MountsContainer for Rocket<Build> {
 
 #[launch]
 async fn launch() -> Rocket<Build> {
-    let result = database::run_migrations();
-    match result {
-        Ok(_) => println!("migrations success"),
-        Err(e) => println!("migration error: {e:?}"),
+    let option = env::var("AUTORUN_MIGRATIONS");
+    if option == Ok("true".to_string()) {
+        let result = database::run_migrations();
+        match result {
+            Ok(_) => println!("migrations success"),
+            Err(e) => println!("migration error: {e:?}"),
+        }
     }
     cors::configure_cors(rocket::build())
         .mount_container(media::build())
