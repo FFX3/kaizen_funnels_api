@@ -1,6 +1,6 @@
 use crate::database::establish_connection;
 use diesel::prelude::*;
-use crate::schema::{ steps, contents };
+use crate::schema::tenant::{ steps, contents };
 use crate::funnels::models::step::{
     NewStep,
     Step,

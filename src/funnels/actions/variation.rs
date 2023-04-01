@@ -4,7 +4,7 @@ use crate::funnels::requests::new_content::NewContentRequest;
 use crate::funnels::requests::new_step::NewStepRequest;
 use diesel::prelude::*;
 use diesel::sql_query;
-use crate::schema::variations;
+use crate::schema::tenant::variations;
 use crate::funnels::models::variation::{
     NewVariation,
     Variation,

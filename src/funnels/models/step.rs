@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 use std::time::SystemTime;
-use crate::schema::steps;
+use crate::schema::tenant::steps;
 use crate::funnels::models::variation::Variation;
 use crate::funnels::models::content::Content;
 

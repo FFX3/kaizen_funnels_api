@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 use std::time::SystemTime;
-use crate::schema::contents;
+use crate::schema::tenant::contents;
 
 #[derive(Queryable, Identifiable, Selectable)]
 pub struct Content {

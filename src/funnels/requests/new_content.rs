@@ -3,7 +3,7 @@ use rocket::serde::{
     Deserialize,
     Serialize
 };
-use crate::schema::contents;
+use crate::schema::tenant::contents;
 use crate::funnels::models::content::Content;
 
 #[derive(Deserialize, Serialize, AsChangeset)]

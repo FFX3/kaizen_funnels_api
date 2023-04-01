@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 use std::time::SystemTime;
-use crate::schema::variations;
+use crate::schema::tenant::variations;
 use crate::funnels::models::funnel::Funnel;
 
 #[derive(Queryable, Selectable, Associations)]

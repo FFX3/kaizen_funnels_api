@@ -1,7 +1,7 @@
 use crate::database::establish_connection;
 use crate::funnels::requests::new_variation::NewVariationRequest;
 use diesel::prelude::*;
-use crate::schema::funnels;
+use crate::schema::tenant::funnels;
 use crate::funnels::models::funnel::{
     NewFunnel,
     Funnel,

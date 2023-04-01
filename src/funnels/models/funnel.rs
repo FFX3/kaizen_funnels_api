@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 use std::time::SystemTime;
-use crate::schema::funnels;
+use crate::schema::tenant::funnels;
 
 #[derive(Queryable, Identifiable, Selectable)]
 pub struct Funnel {
