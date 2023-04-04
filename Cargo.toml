@@ -15,3 +15,5 @@ diesel_as_jsonb = { version = "1.0.0" }
 cloud-storage = "0.10"
 base64 = "0.21.0"
 lazy_static = "1.4.0"
+pwhash = "1"
+rand = "0.5.0"

@@ -25,7 +25,6 @@ pub fn establish_gatekeeper_connection() -> PgConnection {
     dotenv().ok();
 
     let database_url = BASE_DATABASE_URL.to_owned() + &GATEKEEPER_DATABASE_NAME;
-    println!("url: {}", database_url);
     PgConnection::establish(&database_url)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }

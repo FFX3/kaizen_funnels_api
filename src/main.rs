@@ -4,6 +4,7 @@ use std::env;
 mod container;
 mod funnels;
 mod media;
+mod auth;
 mod schema;
 mod database;
 mod cors;
@@ -40,4 +41,5 @@ async fn launch() -> Rocket<Build> {
     cors::configure_cors(rocket::build())
         .mount_container(media::build())
         .mount_container(funnels::build())
+        .mount_container(auth::build())
 }
