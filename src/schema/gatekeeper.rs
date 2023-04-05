@@ -1,6 +1,15 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    authorization_tokens (id) {
+        id -> Int4,
+        user_id -> Int4,
+        permissions -> Jsonb,
+        key -> Varchar,
+    }
+}
+
+diesel::table! {
     organizations (id) {
         id -> Int4,
         name -> Varchar,
@@ -19,9 +28,11 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(authorization_tokens -> users (user_id));
 diesel::joinable!(users -> organizations (organization_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    authorization_tokens,
     organizations,
     users,
 );
